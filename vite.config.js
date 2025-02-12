@@ -5,7 +5,10 @@ import viteTsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
     base: '',
     plugins: [react(), viteTsconfigPaths()],
+    css: {
+        postcss: './postcss.config.js',
+    },
     server: {
-        port: 3000, 
+        port: 3000,
     },
 })

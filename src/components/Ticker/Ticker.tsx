@@ -1,4 +1,4 @@
-import { usePythonState } from '../../hooks/pythonBridge'
+import { usePythonState } from '../../hooks/pythonBridge.js'
 
 import styles from './Ticker.module.css'
 

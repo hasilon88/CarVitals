@@ -1,0 +1,17 @@
+.home-container {
+    width: 15cm;
+    height: 8cm;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+}
+
+.gauge-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    transform: scale(0.7);
+    transform-origin: center;
+}
