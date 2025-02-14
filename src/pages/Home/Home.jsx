@@ -17,7 +17,28 @@ import 'ms-react-progress-bar/dist/ProgressBar.css';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const touchStartX = useRef(null);
+    const touchEndX = useRef(null);
+
+    const handleTouchStart = (e) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        if (touchStartX.current && touchEndX.current) {
+            const diff = touchStartX.current - touchEndX.current;
+            if (diff > 50) {
+                navigate('/supported_commands');
+            } else if (diff < -50) {
+                navigate('/error_codes');
+            }
+        }
+    };
 
     const rawRpm = usePythonState('rpm') || 0;
     const rawSpeed = usePythonState('speed') || 0;
@@ -58,11 +79,10 @@ const Home = () => {
     }, []);
 
     return (
-        <div className="home-container">
+        <div className="home-container" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
             <Row className="justify-content-center align-items-center mt-3">
                 <h3><Clock /></h3>
             </Row>
-            <button onClick={() => navigate('/supported_commands')}>Go to supported commands</button>
             <Row className="justify-content-center align-items-center">
                 <Col md={6} className="gauge-container">
                     <Speedometer
@@ -82,7 +102,6 @@ const Home = () => {
                         <Indicator />
                     </Speedometer>
                 </Col>
-                {/* RPM Gauge */}
                 <Col md={6} className="gauge-container">
                     <Speedometer
                         value={smoothRpm}
@@ -102,9 +121,6 @@ const Home = () => {
                         <Marks step={0.5} />
                     </Speedometer>
                 </Col>
-            </Row>
-            <Row>
-                <ProgressBar value={40} />
             </Row>
         </div>
     );

@@ -12,6 +12,9 @@ class Api:
     def query(self, obd_command_name):
         return self.car.query(obd_command_name)
 
+    def fetch_diagnostic_trouble_codes(self, optional_args):
+        return self.car.fetch_diagnostic_trouble_codes()
+    
     def fullscreen(self):
         window = webview.active_window()
         if window:

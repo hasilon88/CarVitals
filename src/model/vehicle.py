@@ -10,7 +10,7 @@ OBD_COMMANDS = {
     "engine_load": obd.commands.ENGINE_LOAD,
 }
 
-DATABASE_FILE = './car/data/car_vitals.db'
+DATABASE_FILE = './src/data/car_vitals.db'
 
 class Vehicle:
     _instance = None
@@ -103,9 +103,9 @@ class Vehicle:
             response = self.__connection.query(obd.commands[obd_command_name])
             if response and response.value is not None:
                 result = {
-                    "value": str(response.value),  # Ensure it's a string
+                    "value": str(response.value),
                     "unit": str(response.unit) if response.unit else "0",
-                    "raw": str(response)  # Full response as a string
+                    "raw": str(response)
                 }
                 break
             sleep(0.3)
@@ -158,7 +158,7 @@ class Vehicle:
                 ]:
                     cursor.execute(f"SELECT {field} FROM {table} WHERE error_code LIKE ?", (f"%{error_code}%",))
                     result[field + "s"] = [row[0] for row in cursor.fetchall()]
-
+                    
                 return result
         except:
             print(f"Database error occurred")
@@ -166,8 +166,14 @@ class Vehicle:
 
     def fetch_diagnostic_trouble_codes(self):
         """Fetch all diagnostic trouble codes (DTCs) and their corresponding details."""
-        response = self.query("GET_DTC")
-        dtcs = response.value
+        response = None
+        
+        try:
+            response = self.query("GET_DTC")
+        except:
+            return []
+                    
+        dtcs = response
         detailed_errors = []
 
         if isinstance(dtcs, list):
@@ -184,5 +190,5 @@ class Vehicle:
                 detailed_errors.append(error_data)
             else:
                 detailed_errors.append({"error_code": error_code, "details": "No additional details available."})
-
+        
         return detailed_errors
