@@ -17,6 +17,36 @@ const SupportedCommands = () => {
     }
 
     useEffect(() => {
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const handleTouchStart = (e) => {
+            touchStartX = e.touches[0].clientX;
+        };
+
+        const handleTouchMove = (e) => {
+            touchEndX = e.touches[0].clientX;
+        };
+
+        const handleTouchEnd = () => {
+            if (touchEndX - touchStartX > 50) {
+                navigate('/');
+            }
+        };
+
+        document.addEventListener('touchstart', handleTouchStart);
+        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchend', handleTouchEnd);
+
+        return () => {
+            document.removeEventListener('touchstart', handleTouchStart);
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [navigate]);
+
+
+    useEffect(() => {
         async function getSupportedCodes() {
             try {
                 const result = await usePythonApi('fetch_all_supported_commands', null);
